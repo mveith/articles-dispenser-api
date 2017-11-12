@@ -1,0 +1,17 @@
+service: articles-dispenser-api
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+
+plugins:  
+  - serverless-webpack
+  - serverless-offline
+
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      - http:
+          path: hello
+          method: get
