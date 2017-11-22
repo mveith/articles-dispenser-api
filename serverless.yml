@@ -9,9 +9,29 @@ plugins:
   - serverless-offline
 
 functions:
-  hello:
-    handler: handler.hello
+  getRequestToken:
+    handler: handler.getRequestToken
     events:
       - http:
-          path: hello
+          path: getRequestToken
           method: get
+  getAccessToken:
+    handler: handler.getAccessToken
+    events:
+      - http:
+          path: getAccessToken
+          method: get
+          request: 
+            parameters:
+              querystrings:
+                url: true
+  getArticles:
+    handler: handler.getArticles
+    events:
+      - http:
+          path: getArticles
+          method: get
+          request: 
+            parameters:
+              querystrings:
+                url: true
