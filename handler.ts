@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig, AxiosPromise, AxiosResponse, AxiosError } fr
 import { RequestResponseData, PocketArticle, PocketTag } from './PocketModel';
 import { Article, convertArticle, getList } from './ArticlesParser';
 
-let consumerKey = "TODO";
+let consumerKey = process.env.CONSUMER_KEY;
 let redirectUrl = "https://getpocket.com/a/queue/list/";
 let config: AxiosRequestConfig = {
   headers: {
@@ -19,13 +19,17 @@ export function getRequestToken(event, context, callback) {
   request.then((response: AxiosResponse) => {
     callback(null, {
       body: response.data.code,
-      status: 200
+      statusCode: 200,
+      headers: {},
+      isBase64Encoded: false
     });
   })
     .catch((err: AxiosError) => {
       callback(null, {
         body: err.response.statusText,
-        status: err.response.status
+        statusCode: err.response.status,
+        headers: {},
+        isBase64Encoded: false
       });
     });
 };
@@ -40,13 +44,17 @@ export function getAccessToken(event, context, callback) {
   request.then((response: AxiosResponse) => {
     callback(null, {
       body: response.data,
-      status: 200
+      statusCode: 200,
+      headers: {},
+      isBase64Encoded: false
     });
   })
     .catch((err: AxiosError) => {
       callback(null, {
         body: err.response.statusText,
-        status: err.response.status
+        statusCode: err.response.status,
+        headers: {},
+        isBase64Encoded: false
       });
     });
 };
@@ -64,13 +72,17 @@ export function getArticles(event, context, callback) {
     let articles = responseArticles.map(convertArticle)
     callback(null, {
       body: articles,
-      status: 200
+      statusCode: 200,
+      headers: {},
+      isBase64Encoded: false
     });
   })
     .catch((err: AxiosError) => {
       callback(null, {
         body: err.response.statusText,
-        status: err.response.status
+        statusCode: err.response.status,
+        headers: {},
+        isBase64Encoded: false
       });
     });
 };
