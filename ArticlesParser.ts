@@ -19,7 +19,7 @@ export function getList<T>(instance): T[] {
 
 export function convertArticle(original: PocketArticle): Article {
     let isResolved = original.resolved_id > 0;
-    let addedDate = new Date(1970, 1, 1, 0, 0, 0);
+    let addedDate = new Date(1970, 0, 1, 0, 0, 0);
     addedDate.setUTCSeconds(original.time_added);
     return {
         Title: isResolved ? original.resolved_title : original.given_title,
