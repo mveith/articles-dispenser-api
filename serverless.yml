@@ -5,6 +5,7 @@ provider:
   runtime: nodejs6.10
   environment:
     CONSUMER_KEY: "SECRET"
+    CLIENT_URL: "URL"
 
 plugins:  
   - serverless-webpack

@@ -10,6 +10,18 @@ let config: AxiosRequestConfig = {
   }
 };
 
+function createResponse(resultObject: any, statusCode: Number) {
+  return {
+    body: JSON.stringify(resultObject),
+    statusCode: statusCode,
+    headers: {
+      "Access-Control-Allow-Origin": process.env.CLIENT_URL,
+      "Access-Control-Allow-Credentials": true
+    },
+    isBase64Encoded: false
+  };
+}
+
 export function getRequestToken(event, context, callback) {
   let request = axios.post("https://getpocket.com/v3/oauth/request", {
     "consumer_key": consumerKey,
@@ -17,20 +29,10 @@ export function getRequestToken(event, context, callback) {
   }, config);
 
   request.then((response: AxiosResponse) => {
-    callback(null, {
-      body: response.data.code,
-      statusCode: 200,
-      headers: {},
-      isBase64Encoded: false
-    });
+    callback(null, createResponse({ requestToken: response.data.code }, 200));
   })
     .catch((err: AxiosError) => {
-      callback(null, {
-        body: err.response.statusText,
-        statusCode: err.response.status,
-        headers: {},
-        isBase64Encoded: false
-      });
+      callback(null, createResponse({ error: err.response.statusText }, err.response.status));
     });
 };
 
@@ -42,20 +44,10 @@ export function getAccessToken(event, context, callback) {
   }, config);
 
   request.then((response: AxiosResponse) => {
-    callback(null, {
-      body: response.data,
-      statusCode: 200,
-      headers: {},
-      isBase64Encoded: false
-    });
+    callback(null, createResponse({ accessToken: response.data.access_token, userName: response.data.username }, 200));
   })
     .catch((err: AxiosError) => {
-      callback(null, {
-        body: err.response.statusText,
-        statusCode: err.response.status,
-        headers: {},
-        isBase64Encoded: false
-      });
+      callback(null, createResponse({ error: err.response.statusText }, err.response.status));
     });
 };
 
@@ -70,19 +62,9 @@ export function getArticles(event, context, callback) {
   request.then((response: AxiosResponse) => {
     let responseArticles = getList<PocketArticle>(response.data.list);
     let articles = responseArticles.map(convertArticle)
-    callback(null, {
-      body: articles,
-      statusCode: 200,
-      headers: {},
-      isBase64Encoded: false
-    });
+    callback(null, createResponse(articles, 200));
   })
     .catch((err: AxiosError) => {
-      callback(null, {
-        body: err.response.statusText,
-        statusCode: err.response.status,
-        headers: {},
-        isBase64Encoded: false
-      });
+      callback(null, createResponse({ error: err.response.statusText }, err.response.status));
     });
 };
