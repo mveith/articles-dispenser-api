@@ -1,16 +1,12 @@
-import axios, { AxiosRequestConfig, AxiosPromise, AxiosResponse, AxiosError } from 'axios';
-import { RequestResponseData, PocketArticle, PocketTag } from './PocketModel';
-import { Article, convertArticle, getList } from './ArticlesParser';
-
 let consumerKey = process.env.CONSUMER_KEY;
 let redirectUrl = "https://getpocket.com/a/queue/list/";
-let config: AxiosRequestConfig = {
+let config = {
   headers: {
     "X-Accept": "application/json"
   }
 };
 
-function createResponse(resultObject: any, statusCode: Number) {
+function createResponse(resultObject, statusCode) {
   return {
     body: JSON.stringify(resultObject),
     statusCode: statusCode,
@@ -22,36 +18,37 @@ function createResponse(resultObject: any, statusCode: Number) {
   };
 }
 
-export function getRequestToken(event, context, callback) {
+const axios = require('axios');
+const parser = require('./parser.js')
+
+exports.getRequestToken = function getRequestToken(event, context, callback) {
   let request = axios.post("https://getpocket.com/v3/oauth/request", {
     "consumer_key": consumerKey,
     "redirect_uri": redirectUrl
   }, config);
 
-  request.then((response: AxiosResponse) => {
+  request.then((response) => {
     callback(null, createResponse({ requestToken: response.data.code }, 200));
-  })
-    .catch((err: AxiosError) => {
-      callback(null, createResponse({ error: err.response.statusText }, err.response.status));
-    });
+  }).catch((err) => {
+    callback(null, createResponse({ error: err.response.statusText }, err.response.status));
+  });
 };
 
-export function getAccessToken(event, context, callback) {
+exports.getAccessToken = function getAccessToken(event, context, callback) {
   let request = axios.post("https://getpocket.com/v3/oauth/authorize", {
     "consumer_key": consumerKey,
     "code": event.queryStringParameters.key,
     "redirect_uri": redirectUrl
   }, config);
 
-  request.then((response: AxiosResponse) => {
+  request.then((response) => {
     callback(null, createResponse({ accessToken: response.data.access_token, userName: response.data.username }, 200));
-  })
-    .catch((err: AxiosError) => {
-      callback(null, createResponse({ error: err.response.statusText }, err.response.status));
-    });
+  }).catch((err) => {
+    callback(null, createResponse({ error: err.response.statusText }, err.response.status));
+  });
 };
 
-export function getArticles(event, context, callback) {
+exports.getArticles = function getArticles(event, context, callback) {
   let request = axios.post("https://getpocket.com/v3/get", {
     "consumer_key": consumerKey,
     "access_token": event.queryStringParameters.accesstoken,
@@ -59,12 +56,10 @@ export function getArticles(event, context, callback) {
     "detailType": "complete"
   }, config);
 
-  request.then((response: AxiosResponse) => {
-    let responseArticles = getList<PocketArticle>(response.data.list);
-    let articles = responseArticles.map(convertArticle)
+  request.then((response) => {
+    let articles = parser.convertArticles(response.data.list);
     callback(null, createResponse(articles, 200));
-  })
-    .catch((err: AxiosError) => {
-      callback(null, createResponse({ error: err.response.statusText }, err.response.status));
-    });
+  }).catch((err) => {
+    callback(null, createResponse({ error: err.response.statusText }, err.response.status));
+  });
 };

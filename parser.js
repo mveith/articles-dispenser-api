@@ -1,23 +1,11 @@
-import { PocketArticle, PocketTag } from './PocketModel';
-
-export interface Article {
-    Id: string;
-    Url: string;
-    Title: string;
-    Added: Date;
-    Excerpt: string;
-    WordCount: number;
-    Tags: string[];
-}
-
-export function getList<T>(instance): T[] {
+function getList(instance) {
     if (instance === null || instance === undefined) {
         return [];
     }
     return Object.getOwnPropertyNames(instance).map(n => instance[n]);
 }
 
-export function convertArticle(original: PocketArticle): Article {
+function convertArticle(original) {
     let isResolved = original.resolved_id > 0;
     let addedDate = new Date(1970, 0, 1, 0, 0, 0);
     addedDate.setUTCSeconds(original.time_added);
@@ -28,6 +16,10 @@ export function convertArticle(original: PocketArticle): Article {
         WordCount: original.word_count,
         Url: isResolved ? original.resolved_url : original.given_url,
         Added: addedDate,
-        Tags: getList<PocketTag>(original.tags).map(t => t.tag)
+        Tags: getList(original.tags).map(t => t.tag)
     };
+}
+
+exports.convertArticles = function convertArticles(list) {
+    return getList(list).map(convertArticle);
 }

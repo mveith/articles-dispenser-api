@@ -13,6 +13,7 @@
         "@types/es6-promise": "0.0.32",
         "@types/node": "^4.0.0",
         "aws-lambda-local": "^1.0.14",
-        "aws-sdk-typescript": "0.0.3"
+        "aws-sdk-typescript": "0.0.3",
+        "serverless-offline": "^4.7.1"
     }
 }
