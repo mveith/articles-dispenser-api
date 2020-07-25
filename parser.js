@@ -22,5 +22,5 @@ function convertArticle(original) {
 }
 
 exports.convertArticles = function convertArticles(list) {
-    return getList(list).slice(0, 5).map(convertArticle);
+    return getList(list).map(convertArticle);
 }
