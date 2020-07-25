@@ -16,10 +16,11 @@ function convertArticle(original) {
         WordCount: original.word_count,
         Url: isResolved ? original.resolved_url : original.given_url,
         Added: addedDate,
-        Tags: getList(original.tags).map(t => t.tag)
+        Tags: getList(original.tags).map(t => t.tag),
+        IsArticle: original.is_article === "1"
     };
 }
 
 exports.convertArticles = function convertArticles(list) {
-    return getList(list).map(convertArticle);
+    return getList(list).slice(0, 5).map(convertArticle);
 }
