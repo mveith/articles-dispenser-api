@@ -2,8 +2,8 @@ service: articles-dispenser-api
 
 provider:
   name: aws
-  runtime: nodejs6.10
-  environment:
+  runtime: nodejs12.x
+  environment:    
     CONSUMER_KEY: "SECRET"
     CLIENT_URL: "URL"
 
