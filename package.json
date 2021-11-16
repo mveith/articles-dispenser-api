@@ -4,7 +4,7 @@
     "description": "articles-dispenser-api",
     "scripts": {},
     "dependencies": {
-        "aws-sdk": "^2.5.5",
+        "aws-sdk": "^2.814.0",
         "axios": "^0.18.1"
     },
     "devDependencies": {
